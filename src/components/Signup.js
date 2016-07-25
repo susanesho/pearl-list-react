@@ -1,20 +1,23 @@
 import React , {Component} from 'react';
+import { connect } from 'react-redux';
+import { handleSignup } from '../actions'
 
-export default class App extends Component {
+class Signup extends Component {
   constructor(){
     super();
     this.state = {
-      username: '',
+      name: '',
       password: '',
       email: '',
+      token: '',
     }
     this.handleClick = this.handleClick.bind(this);
-    this.changeUsername = this.changeUsername.bind(this);
+    this.changeName = this.changeName.bind(this);
     this.changeEmail = this.changeEmail.bind(this);
     this.changePassword = this.changePassword.bind(this);
   }
-  changeUsername(e){
-    this.setState({username: e.target.value})
+  changeName(e){
+    this.setState({name: e.target.value})
   }
   changePassword(e){
     this.setState({password: e.target.value})
@@ -22,9 +25,13 @@ export default class App extends Component {
    changeEmail(e){
     this.setState({email: e.target.value})
   }
+
   handleClick(){
+    let objectSignup = Object.assign({}, this.state);
+    this.props.handleSignup(objectSignup);
     console.log(this.state);
   }
+
   render(){
    return (
       <div className="mdl-grid">
@@ -34,7 +41,7 @@ export default class App extends Component {
         <div className="page-content paddit">
           <legend>Sign up a new user</legend>
           <div className="mui-textfield">
-            <input type="text" value={`${this.state.username}`} name="name" onChange={this.changeUsername}/>
+            <input type="text" value={`${this.state.name}`} name="name" onChange={this.changeName}/>
             <label>Name</label>
           </div>
           <div className="mui-textfield">
@@ -57,3 +64,17 @@ export default class App extends Component {
   );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    handleSignup: (signupObject) => dispatch(handleSignup(signupObject))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Signup);

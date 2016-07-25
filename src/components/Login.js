@@ -8,6 +8,7 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
+      token: '',
     }
     this.handleClick = this.handleClick.bind(this);
     this.changeUsername = this.changeUsername.bind(this);
@@ -19,11 +20,14 @@ class Login extends Component {
   changeUsername(e){
     this.setState({email: e.target.value})
   }
+
   handleClick(){
     let objectLogin = Object.assign({}, this.state);
     this.props.handleLogin(objectLogin);
+    console.log(this.state);
   }
   render(){
+    // console.log(this.props.user)
    return (
       <div className="mdl-grid">
       <div className="mdl-cell mdl-cell--4-col">
@@ -54,9 +58,11 @@ class Login extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user
+    user: state.user,
+    token: state.token
   }
 }
+
 const mapDispatchToProps = (dispatch) => {
   return {
     handleLogin: (loginObject) => dispatch(handleLogin(loginObject))
