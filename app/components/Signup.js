@@ -9,7 +9,6 @@ class Signup extends Component {
       name: '',
       password: '',
       email: '',
-      token: '',
     }
     this.handleClick = this.handleClick.bind(this);
     this.changeName = this.changeName.bind(this);

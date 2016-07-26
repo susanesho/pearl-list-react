@@ -8,9 +8,8 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import Bucketlist from './components/Bucketlist';
 import store from './store';
-import { Router, Route, browserHistory } from 'react-router'
+import { Router, Route, browserHistory, IndexRoute } from 'react-router'
 import './index.css';
-
 
 render((
   <Provider store={store}>
@@ -18,7 +17,7 @@ render((
       <Route path="/" component={App}>
         <Route path="home" component={Home}/>
         <Route path="login" component={Login}/>
-        <Route path="signup" component={Signup}/>
+        <IndexRoute path="signup" component={Signup}/>
         <Route path="bucketlist" component={Bucketlist}/>
         <Route path="*" component={NoMatch}/>
       </Route>

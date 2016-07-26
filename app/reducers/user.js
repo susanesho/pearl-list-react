@@ -22,7 +22,7 @@ function user(state = intialState, action){
 }
 
 const initBucketList = {
-  bucketlist: [],
+  data: [],
   isLoading: false
 };
 
@@ -30,14 +30,20 @@ function bucketlist(state = initBucketList, action){
   switch(action.type){
     case actionTypes.FETCH_BUCKETLIST:
       return {...state, isLoading: true}
-    case actionTypes.FETCH_BUCKETLIST_SUCCESS:
-      return {...state, bucketlist: action.bucketlist, isLoading: false}
+    case actionTypes.FETCH_BUCKET_LIST_SUCCESS:
+      console.log(action.bucketlists, 'bucketlists');
+      return {...state, data: action.bucketlists, isLoading: false}
     case actionTypes.EDIT_BUCKETLIST:
       let instanceBucketlist = state.bucketlist.find((bucketlist) => bucketlist.id === action.bucketlist.id)
-      return {...state, bucketlist: instanceBucketlist, isLoading: false }
+      return {...state, data: instanceBucketlist, isLoading: false }
+    case actionTypes.ADD_BUCKET_LIST_ITEMS_SUCCESS:
+      let copiedArray = state.data.slice();
+      let index = copiedArray.findIndex((bucketlist) => bucketlist.id === action.bucketlistId);
+      copiedArray[index].unshift(action.item);
+      return {...state, data: copiedArray, isLoading: false};
     case actionTypes.DELETE_BUCKETLIST:
       let filteredBucketlist = state.bucketlist.filter((bucketlist) => bucketlist.id === action.bucketlist.id);
-      return {...state, bucketlist: filteredBucketlist, isLoading: false}
+      return {...state, bucketlists: filteredBucketlist, isLoading: false}
     default:
       return state;
   }

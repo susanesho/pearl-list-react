@@ -3,7 +3,7 @@ import superagentPromise from 'superagent-promise';
 export const LOGIN_SUCESS = "LOGIN_SUCESS";
 export const SIGNUP_SUCESS = "SIGNUP_SUCESS";
 export const FETCH_BUCKET_LIST_SUCCESS = "FETCH_BUCKET_LIST_SUCCESS";
-
+export const ADD_BUCKET_LIST_ITEMS_SUCCESS = "ADD_BUCKET_LIST_ITEMS_SUCCESS"
 
 let request = superagentPromise(superagent, Promise);
 
@@ -21,10 +21,18 @@ function signupSucess(user){
   }
 }
 
-function fetchBucketListSucess(bucketlist){
+function fetchBucketListSucess(bucketlists){
   return {
     type: FETCH_BUCKET_LIST_SUCCESS,
-    bucketlist
+    bucketlists
+  }
+}
+
+function addBucketListItemsSuccess(item, bucketlistId){
+  return {
+    type: ADD_BUCKET_LIST_ITEMS_SUCCESS,
+    item,
+    bucketlistId
   }
 }
 
@@ -61,36 +69,39 @@ export function handleLogin(loginObject){
     });
   }
 }
+
 export function fetchBucketList(){
   return (dispatch, getState) => {
     const token = window.localStorage.getItem('token');
     console.log(token, 'token')
     dispatch(requestLogin());
-    request('POST', 'http://localhost:3001/api/v1/bucketlists').set('Authorization', `Bearer: ${token}`).then((bucketlist) => {
-      dispatch(fetchBucketListSucess(bucketlist));
+    request('GET', 'http://localhost:3001/api/v1/bucketlists').set('Authorization', `Bearer: ${token}`).then((response) => {
+      console.log(response.body.bucketlists, response.body);
+      dispatch(fetchBucketListSucess(response.body.bucketlists));
     });
   }
 }
 
 export function handleBucketList(objectBucketlist){
   return (dispatch, getState) => {
-    // const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyOCwiZXhwIjoxNDY5NTMyMzM2fQ.5q6Y6IYJmMMGS8EkDzUvgaDUAIIqg082ftKKPwnqC1Q'
     dispatch(requestLogin());
     const token = window.localStorage.getItem('token');
-    request('POST', 'http://localhost:3001/api/v1/bucketlists').set('Authorization', `token: ${token}`).send(objectBucketlist).then((bucketlist) => {
+    request('POST', 'http://localhost:3001/api/v1/bucketlists').set('Authorization', `Bearer: ${token}`).send(objectBucketlist).then((bucketlist) => {
       dispatch(fetchBucketListSucess(bucketlist));
     });
   }
 }
-// export function addBucketList(){
-//   return (dispatch, getState) => {
-//     const token = getState.user.token;
-//     dispatch(requestLogin());
-//     request('POST', 'http://localhost:3001/api/v1/bucketlists').set('Authorization', `Bearer: ${token}`).then((bucetlist) => {
-//       dispatch(fetchBucketListSucess(bucketlist));
-//     });
-//   }
-// }
+
+export function handleBucketListItem(objectBucketlistItem){
+  console.log(objectBucketlistItem);
+  return (dispatch, getState) => {
+    dispatch(requestLogin());
+    const token = window.localStorage.getItem('token');
+    request('POST', `http://localhost:3001/api/v1/bucketlists/${objectBucketlistItem.id}/items`).set('Authorization', `Bearer: ${token}`).send({name: objectBucketlistItem.name}).then((item) => {
+      dispatch(addBucketListItemsSuccess(item, objectBucketlistItem.id));
+    });
+  }
+}
 
 export function handleSignup(signupObject){
   return dispatch => {
